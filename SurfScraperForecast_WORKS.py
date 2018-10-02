@@ -30,6 +30,11 @@ for url in my_url:
 	desc = page_soup.findAll('div', class_=re.compile("list-group-content"))
 	swell = page_soup.findAll('td', class_=re.compile("text-center background-gray-lighter"))
 
+	#DB creation
+	conn = sqlite3.connect('SurfSend.db')
+	cursor = conn.cursor()
+	cursor.execute('CREATE TABLE IF NOT EXISTS SurfReport(WaveSize TEXT, WaveInterval TEXT)')
+
 # iterates over parsed HTML
 	for wave in wavez:
 		#1 wavesize
@@ -39,12 +44,19 @@ for url in my_url:
 		# for d in desc:
 		# 	summary = d.find('div', class_='inline-block').get_text()
 
-		# attempting to capture swell size (ie 3ft)
-		# problem = this also scrapes info for swell interval ie '12s'
-			# this is due to both data points containing identical XML class info
-			# need a way to scrape each individually
+		#scraping wave height & interval
 		for w in swell:
-			swellx = w.find('h4', class_='nomargin font-sans-serif heavy').get_text()
+			swellx = w.find('h4', class_='nomargin font-sans-serif heavy')
+			swelly = swellx.text.strip()
+			if swelly.endswith('ft'):
+				swelly2 = swelly
+			elif swelly.endswith('s'):
+				swelly3 = swelly
+				print(swelly2)
 
-			# print(wavesizex)
-			print(swellx)
+				conn = sqlite3.connect('SurfSend.db')
+				cursor = conn.cursor()
+				cursor.execute("INSERT INTO SurfReport VALUES (?,?)", (swelly2, swelly3))
+				conn.commit()
+				cursor.close()
+				conn.close()

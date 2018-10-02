@@ -38,12 +38,13 @@ for url in my_url:
 	#variable for soon to be parsed page
 	wavez = page_soup.findAll('div', class_=re.compile("col-lg-7 col-md-7 col-sm-7 col-xs-12"))
 	beaches = page_soup.findAll('div', class_=re.compile("fluid-column"))
-	desc = page_soup.findAll('div', class_=re.compile("list-group-title"))
+	desc = page_soup.findAll('div', class_=re.compile("list-group-content"))
+	wind = page_soup.findAll('div', class_=re.compile("col-lg-7 col-md-7 col-sm-7 col-xs-12"))
 	#prints the list of URLs we scraped from
 	print(url)
 	conn = sqlite3.connect('SurfSend.db')
 	cursor = conn.cursor()
-	cursor.execute('CREATE TABLE IF NOT EXISTS Tracks(WaveSize TEXT, Beach TEXT, WebSource TEXT, Summary TEXT)')
+	cursor.execute('CREATE TABLE IF NOT EXISTS Tracks(WaveSize TEXT, Beach TEXT, WebSource TEXT, Summary TEXT, Wind TEXT)')
 
 
 # iterates over parsed HTML
@@ -60,14 +61,20 @@ for url in my_url:
 			beachnamex = beachname.text.strip()
 			#attempting to get the wind description ... having trouble
 			for d in desc:
-				summary = d.find('div', class_='inline-block')
+				summary = d.find('div', class_='inline-block').get_text()
+
+				for w in wind:
+					windx = w.find('p', class_='nomargin-top')
+					windxx = windx.text.strip()
+
+
 
 
 			print(wavesizex)
 
 			conn = sqlite3.connect('SurfSend.db')
 			cursor = conn.cursor()
-			cursor.execute("INSERT INTO Tracks VALUES (?, ?, ?, ?)", (wavesizex, beachnamex, web_src, summary))
+			cursor.execute("INSERT INTO Tracks VALUES (?, ?, ?, ?,?)", (wavesizex, beachnamex, web_src, summary, windxx))
 			conn.commit()
 			cursor.close()
 			conn.close()
