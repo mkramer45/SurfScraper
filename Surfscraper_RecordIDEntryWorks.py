@@ -28,35 +28,29 @@ for url in my_url:
 	#variable for soon to be parsed page
 	wavez = page_soup.findAll('div', class_=re.compile("col-lg-7 col-md-7 col-sm-7 col-xs-12"))
 	desc = page_soup.findAll('div', class_=re.compile("list-group-content"))
-	swell = page_soup.findAll('td', class_=re.compile("text-center background-gray-lighter"))
-
+	date = page_soup.findAll('th', class_=re.compile("row-title background-gray-lighter"))
 	#DB creation
 	conn = sqlite3.connect('SurfSend.db')
 	cursor = conn.cursor()
-	cursor.execute('CREATE TABLE IF NOT EXISTS SurfReport(WaveSize TEXT, WaveInterval TEXT)')
+	cursor.execute('CREATE TABLE IF NOT EXISTS SurfDate(ID INTEGER PRIMARY KEY AUTOINCREMENT, Day TEXT)')
 
 # iterates over parsed HTML
-	for wave in wavez:
-		#1 wavesize
-		wavesize = wave.find('li', class_='rating-text text-dark')
-		wavesizex = wavesize.text.strip()
-		#2 summary ... !!!!commenting out for now !!!!!
-		# for d in desc:
-		# 	summary = d.find('div', class_='inline-block').get_text()
+	# for wave in wavez:
+	# 	#1 wavesize
+	# 	wavesize = wave.find('li', class_='rating-text text-dark')
+	# 	wavesizex = wavesize.text.strip()
+		#2 summary
+	# for d in date:
+	# 	datex = d.find('h6', class_='nomargin pull-left heavy table-header-title').get_text()
+	e = 't'
 
-		#scraping wave height & interval
-		for w in swell:
-			swellx = w.find('h4', class_='nomargin font-sans-serif heavy')
-			swelly = swellx.text.strip()
-			if swelly.endswith('ft'):
-				swelly2 = swelly
-			elif swelly.endswith('s'):
-				swelly3 = swelly
-				print(swelly2)
 
-				conn = sqlite3.connect('SurfSend.db')
-				cursor = conn.cursor()
-				cursor.execute("INSERT INTO SurfReport VALUES (?,?)", (swelly2, swelly3))
-				conn.commit()
-				cursor.close()
-				conn.close()
+	print(e)
+	conn = sqlite3.connect('SurfSend.db')
+	cursor = conn.cursor()
+	#cursor.execute("INSERT INTO SurfDate VALUES (?)", (e))
+	cursor.execute("INSERT INTO SurfDate (Day) VALUES (?)", (e,))
+	#cursor.execute("INSERT INTO SurfDate VALUES (?,?)", (id, datex))
+	conn.commit()
+	cursor.close()
+	conn.close()

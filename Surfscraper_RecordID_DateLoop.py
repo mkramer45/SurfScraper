@@ -28,34 +28,26 @@ for url in my_url:
 	#variable for soon to be parsed page
 	wavez = page_soup.findAll('div', class_=re.compile("col-lg-7 col-md-7 col-sm-7 col-xs-12"))
 	desc = page_soup.findAll('div', class_=re.compile("list-group-content"))
-	swell = page_soup.findAll('td', class_=re.compile("text-center background-gray-lighter"))
 	date = page_soup.findAll('th', class_=re.compile("row-title background-gray-lighter"))
-
 	#DB creation
 	conn = sqlite3.connect('SurfSend.db')
 	cursor = conn.cursor()
-	cursor.execute('CREATE TABLE IF NOT EXISTS SurfReport(WaveSize TEXT, WaveInterval TEXT, Day TEXT)')
+	cursor.execute('CREATE TABLE IF NOT EXISTS SurfDate(ID INTEGER PRIMARY KEY, Day TEXT)')
 
 # iterates over parsed HTML
+	# for wave in wavez:
+	# 	#1 wavesize
+	# 	wavesize = wave.find('li', class_='rating-text text-dark')
+	# 	wavesizex = wavesize.text.strip()
+		#2 summary
 	for d in date:
-		#1 wavesize
 		datex = d.find('h6', class_='nomargin pull-left heavy table-header-title').get_text()
 
-		#scraping wave height & interval
-	for w in swell:
-		swellx = w.find('h4', class_='nomargin font-sans-serif heavy')
-		swelly = swellx.text.strip()
-		if swelly.endswith('ft'):
-			swelly2 = swelly
-		elif swelly.endswith('s'):
-			swelly3 = swelly
-			for d in date:
-				#1 wavesize
-				datex = d.find('h6', class_='nomargin pull-left heavy table-header-title').get_text()
 
-				conn = sqlite3.connect('SurfSend.db')
-				cursor = conn.cursor()
-				cursor.execute("INSERT INTO SurfReport VALUES (?,?,?)", (swelly2, swelly3, datex))
-				conn.commit()
-				cursor.close()
-				conn.close()
+		print(datex)
+		conn = sqlite3.connect('SurfSend.db')
+		cursor = conn.cursor()
+		cursor.execute("INSERT INTO SurfDate (Day) VALUES (?)", (date,))
+		conn.commit()
+		cursor.close()
+		conn.close()

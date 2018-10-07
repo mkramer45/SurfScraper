@@ -29,10 +29,6 @@ for url in my_url:
 	wavez = page_soup.findAll('div', class_=re.compile("col-lg-7 col-md-7 col-sm-7 col-xs-12"))
 	desc = page_soup.findAll('div', class_=re.compile("list-group-content"))
 	date = page_soup.findAll('th', class_=re.compile("row-title background-gray-lighter"))
-	#DB creation
-	conn = sqlite3.connect('SurfSend.db')
-	cursor = conn.cursor()
-	cursor.execute('CREATE TABLE IF NOT EXISTS SurfDate(id INTEGER PRIMARY KEY AUTOINCREMENT, Day TEXT)')
 
 # iterates over parsed HTML
 	# for wave in wavez:
@@ -45,10 +41,3 @@ for url in my_url:
 
 
 		print(datex)
-		conn = sqlite3.connect('SurfSend.db')
-		cursor = conn.cursor()
-		cursor.execute("INSERT INTO SurfDate VALUES (?)", (datex))
-		#cursor.execute("INSERT INTO SurfDate VALUES (?,?)", (id, datex))
-		conn.commit()
-		cursor.close()
-		conn.close()
